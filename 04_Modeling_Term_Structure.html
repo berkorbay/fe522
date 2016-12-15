@@ -404,14 +404,12 @@ head(FedYieldCurve)</code></pre>
 </tbody>
 </table>
 <p>The zero coupon bond prices (<span class="math inline">\(B(0,t)\)</span>) can be found with the following system of equations.</p>
-<p><span class="math display">\[
-\begin{align*}
+<span class="math display">\[\begin{align*}
 101 &amp;= 105B(0,1) \\
 101.5 &amp;= 5.5B(0,1) + 105.5B(0,2) \\
 99 &amp;= 5B(0,1) + 5B(0,2) + 105B(0,3) \\
-100 &amp;= 6B(0,1) + 6B(0,2) + 6B(0,3) + 106B(0,4) \\
-\end{align*}
-\]</span></p>
+100 &amp;= 6B(0,1) + 6B(0,2) + 6B(0,3) + 106B(0,4)
+\end{align*}\]</span>
 <p>Then we obtain <span class="math inline">\(B(0,1)=0.9619, B(0,2)=0.9114, B(0,3) = 0.85363, B(0,4) = 0.789\)</span>. Their corresponding zero coupon yield rates are <span class="math inline">\(R(0,1)=3.96\%, R(0,2)=4.717\%, R(0,3)=5.417\%, R(0,4)=6.103\%\)</span>.</p>
 <pre class="r"><code>get_zero_coupon&lt;-function(coupons=c(5,5.5,5,6),BondPrices=c(101,101.5,99,100),nominal_value=100){
 
@@ -458,14 +456,12 @@ yield_interpolate(3.75)</code></pre>
 <div id="cubic-interpolation" class="section level2">
 <h2>Cubic Interpolation</h2>
 <p>Suppose our rates are as following: <span class="math inline">\(R(0,1)=0.03, R(0,2)=0.05, R(0,3)=0.055, R(0,4)=0.06\)</span>. We are going to solve the following structure for a, b, c and d.</p>
-<p><span class="math display">\[
-\begin{align*}
+<span class="math display">\[\begin{align*}
 R(0,t_1) &amp;= at_1^3 + bt_1^2 + ct_1 + d \\
 R(0,t_2) &amp;= at_2^3 + bt_2^2 + ct_2 + d \\
 R(0,t_3) &amp;= at_3^3 + bt_3^2 + ct_3 + d \\
-R(0,t_4) &amp;= at_4^3 + bt_4^2 + ct_4 + d \\
-\end{align*}
-\]</span></p>
+R(0,t_4) &amp;= at_4^3 + bt_4^2 + ct_4 + d
+\end{align*}\]</span>
 <pre class="r"><code>A_mat&lt;-t(matrix(1:4,nrow=4,ncol=4,byrow=TRUE)^(3:0))
 abcd_vec&lt;-solve(A_mat,c(0.03,0.05,0.055,0.06))
 
@@ -517,9 +513,9 @@ head(ns_data)</code></pre>
 <div id="beta-sensitivity" class="section level3">
 <h3>Beta Sensitivity</h3>
 <p>Consider the price of a bond delivering future cash flows <span class="math inline">\(F_i\)</span> as <span class="math inline">\(P_0 = \sum_iF_ie^{-\theta_iR(0,\theta_i)}\)</span>. So the change in the price with beta parameters is as follows.</p>
-<p><span class="math display">\[\dfrac{\partialP_0}{\partial\beta_0} = -\sum_i\theta_iF_ie^{-\theta_iR(0,\theta_i)} \]</span></p>
-<p><span class="math display">\[\dfrac{\partialP_0}{\partial\beta_1} = -\sum_i\theta_i[\dfrac{1-exp(-\theta/\tau)}{\theta/\tau}\right]F_ie^{-\theta_iR(0,\theta_i)} \]</span></p>
-<p><span class="math display">\[\dfrac{\partialP_0}{\partial\beta_2} = -\sum_i\theta_i[\dfrac{1-exp(-\theta/\tau)}{\theta/\tau} - exp(-\theta/\tau)\right]F_ie^{-\theta_iR(0,\theta_i)} \]</span></p>
+<p><span class="math display">\[\dfrac{\partial P_{0}}{\partial \beta_{0}} = -\sum_{i}\theta_{i}F_i e^{-\theta_{i} R(0,\theta_{i})}\]</span></p>
+<p><span class="math display">\[\dfrac{\partial P_0}{\partial \beta_1} = -\sum_i\theta_i \left[ \dfrac{1 - exp(- \theta / \tau)}{\theta/\tau}\right]F_ie^{-\theta_i R(0,\theta_i)}\]</span></p>
+<p><span class="math display">\[\dfrac{\partial P_0}{\partial \beta_2} = - \sum_i \theta_i \left[ \dfrac{1 - exp(- \theta / \tau)}{\theta / \tau} - exp(- \theta / \tau) \right]F_ie^{-\theta_iR(0,\theta_i)}\]</span></p>
 <pre class="r"><code>nelson_siegel_sensitivities&lt;-function(tau=3,beta0=0.08,beta1=-0.03,beta2=-0.01,nominal_rate=100,coupon_rate,maturity){
 
         f_i &lt;- nominal_rate*rep(coupon_rate,maturity)
